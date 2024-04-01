@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>两个表格的弹性布局</title>
+  <link rel="stylesheet" type="text/css" href="../libs/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../libs/icon.css">
+    <script type="text/javascript" src="../libs/jquery.min.js">
+    </script>
+    <script type="text/javascript" src="../libs/jquery.easyui.min.js">
+    </script>
+
+  <style>
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .left {
+      width: 180px;
+      background-color: #f1f1f1;
+    }
+
+    .content {
+      padding: 12px;
+    }
+
+    .my-panel {
+      padding: 12px;
+      flex-grow: 1;
+      flex-basis: 50%;
+      overflow: hidden;
+    }
+
+    button {
+      height: 28px;
+      min-width: 60px;
+    }
+
+    button+button {
+      margin-left: 8px;
+    }
+
+    .top-wrapper {
+      height: 800px;
+      display: flex;
+    }
+
+    .table-box {
+      height: 300px;
+      width: 800px;
+    }
+  </style>
+</head>
+
+<body class="easyui-layout" fit="true">
+
+
+
+  <div region="west" class="left">
+     这是datagrid一个全局勾选的示例
+  </div>
+  <div region="center" border="false" class="content">
+    <ul class="type-list">
+      <li><button onclick="loadData('A')">TYPE A</button></li>
+      <li><button onclick="loadData('B')">TYPE B</button></li>
+    </ul>
+    <div class="table-box">
+      <table id="tableSource" class="easyui-datagrid"
+        data-options="fit:true,fitColumns:true,idField:'id',onCheck:saveCheckedRow,onUncheck:removeCheckedRow,onCheckAll:onCheckAll,onUncheckAll:onUncheckAll">
+        <thead>
+          <tr>
+            <th data-options="field:'id',checkbox:true,width:30"></th>
+            <th data-options="field:'rid',width:80">ID</th>
+            <th data-options="field:'type',width:80">TYPE</th>
+            <th data-options="field:'name',width:200">Name</th>
+            <th data-options="field:'desc',width:200">DESC</th>
+
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <div class="table-box">
+      <table id="tableChecked" class="easyui-datagrid" data-options="fit:true,fitColumns:true,singleSelect:true">
+        <thead>
+          <tr>
+            <th data-options="field:'rid'" width="200">ID</th>
+            <th data-options="field:'name'" width="200">Name</th>
+            <th data-options="field:'desc'" width="200">DESC</th>
+            <th data-options="field:'OP',width:100,formatter:editFormatter">OPERATE</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <button onclick="reViewCheckedRow()">查看勾选的行</button>
+    <button onclick="clean()">隐藏下表</button>
+  </div>
+  <script type="text/javascript">
+
+    const cacheRows = []
+
+    function fixSourceChecked() {
+      const rows = $('#tableSource').datagrid('getRows')
+      for (let index = 0; index < rows.length; index++) {
+        const row = rows[index];
+        const isChecked = cacheRows.findIndex(equalFun(row)) > -1
+        command = isChecked ? 'checkRow' : 'uncheckRow'
+        $('#tableSource').datagrid(command, index)
+      }
+    }
+
+    function onRemove(id) {
+      const rowIndex = $('#tableChecked')
+        .datagrid('getRows')
+        .findIndex(function (row) {
+          return row.id === id
+        })
+
+      $('#tableChecked').datagrid('deleteRow', rowIndex)
+
+    }
+
+    function editFormatter(value, row, index) {
+      return '<a href="javascript:void(0)" onclick="onRemove(\'' + row.id + '\')">Delete</a>'
+    }
+
+    function equalFun(source) {
+      return function (target) {
+        return source.id === target.id
+      }
+    }
+
+
+
+    function onCheckAll(rows) {
+      rows.forEach(function (row) {
+        saveCheckedRow(undefined, row)
+      })
+    }
+    function saveCheckedRow(_, row) {
+      const cacheIndex = cacheRows.findIndex(equalFun(row))
+      if (cacheIndex < 0) {
+        cacheRows.push(row)
+      }
+    }
+
+    function onUncheckAll(rows) {
+      rows.forEach(function (row) {
+        removeCheckedRow(undefined, row)
+      })
+    }
+    function removeCheckedRow(_, row) {
+      const cacheIndex = cacheRows.findIndex(equalFun(row))
+      if (cacheIndex > -1) {
+        cacheRows.splice(cacheIndex, 1)
+      }
+    }
+
+    function loadData(type) {
+      $('#tableSource').datagrid({
+        fit: true,
+        fitColumns: true,
+        method: "get",
+        url: `data${type}.json`,
+        onLoadSuccess: fixSourceChecked
+      })
+    }
+
+
+    function reViewCheckedRow() {
+      $('#tableChecked').datagrid({
+        fitColumns: true,
+        data: cacheRows,
+      })
+    }
+
+    function clean() {
+      $('#tableChecked').datagrid('loadData', [])
+      $('#tableSource').datagrid('reload')
+      console.log(cacheRows)
+    }
+
+    $(function () {
+
+
+    })
+  </script>
+
+</body>
+
+
+</html>

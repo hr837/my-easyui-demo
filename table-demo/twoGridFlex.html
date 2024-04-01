@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>两个表格的弹性布局</title>
+    <link rel="stylesheet" type="text/css" href="../libs/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../libs/icon.css">
+    <script type="text/javascript" src="../libs/jquery.min.js">
+    </script>
+    <script type="text/javascript" src="../libs/jquery.easyui.min.js">
+    </script>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .left {
+            width: 180px;
+            background-color: #f1f1f1;
+        }
+
+        .content {
+            display: flex;
+            flex-flow: column nowrap;
+            overflow: hidden;
+        }
+
+        .my-panel {
+            padding: 12px;
+            flex-grow: 1;
+            flex-basis: 50%;
+            overflow: hidden;
+        }
+
+        .panel1 .table-box {
+            height: calc(100% - 40px);
+        }
+
+        .panel2 .table-box {
+            height: calc(100% - 68px);
+        }
+
+        .collapse {
+            flex-grow: 0;
+            flex-basis: auto;
+            height: 52px;
+        }
+
+        .my-header {
+            height: 32px;
+            padding: 0 12px;
+            background-color: #f1f1f1;
+            line-height: 32px;
+            margin-bottom: 8px;
+        }
+
+        .actions {
+            height: 28px;
+            line-height: 28px;
+            margin-bottom: 8px;
+        }
+
+        .actions button {
+            height: 28px;
+            min-width: 60px;
+        }
+
+        button+button {
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body class="easyui-layout" fit="true">
+
+    <script>
+
+        function initTableData(selector, rowCount) {
+            var index = 1
+            var max = rowCount + 1
+            var data = []
+            while (index <= max) {
+                data.push({ id: index, code: 'code-' + index, name: 'name-' + index })
+                index++;
+            }
+            $(selector).datagrid({ data })
+        }
+
+        function registerEvent() {
+            $('.my-header').click(function () {
+                var type = $(this).parent().toggleClass('collapse').attr('data-type')
+                resizeTable()
+            })
+        }
+
+        function resizeTable() {
+            $('.my-panel:not(.collapse) .easyui-datagrid').datagrid('resize')
+        }
+
+
+        $(function () {
+
+            registerEvent();
+
+            initTableData('#t_R', Math.random()*100);
+            initTableData('#t_M', Math.random()*100);
+
+        })
+    </script>
+
+    <div region="west" class="left">
+        这是一个展示两个datagrid使用flex布局展示的方式。
+    </div>
+    <div region="center" border="false" class="content">
+        <!-- 第一个面板 -->
+        <div class="my-panel panel1" data-type="R">
+            <div class="my-header">
+                这是面板1
+            </div>
+            <div class="table-box">
+                <table class="easyui-datagrid" id="t_R" data-options="fit:true,fitColumns:true">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'ck',checkbox:true"></th>
+                            <th data-options="field:'code',width:100">编码</th>
+                            <th data-options="field:'name',width:100">名称</th>
+                            <th data-options="field:'code1',width:100">编码2</th>
+                            <th data-options="field:'name2',width:100">名称2</th>
+                            <th data-options="field:'price',width:100">价格</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <!-- 第二个面板 -->
+        <div class="my-panel panel2" data-type="M">
+            <div class="my-header">
+                这是面板2
+            </div>
+            <div class="actions">
+                <button>增加</button>
+                <button>删除</button>
+            </div>
+            <div class="table-box">
+                <table class="easyui-datagrid" id="t_M" data-options="fit:true,fitColumns:true">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'ck',checkbox:true"></th>
+                            <th data-options="field:'code',width:100">编码</th>
+                            <th data-options="field:'name',width:100">名称</th>
+                            <th data-options="field:'code1',width:100">编码2</th>
+                            <th data-options="field:'name2',width:100">名称2</th>
+                            <th data-options="field:'price',width:100">价格</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
