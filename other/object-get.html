@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div style="padding: 12px;">
+    <button onclick="fun1Click()" oncontextmenu="event.preventDefault()">fun1</button>
+    <button onclick="fun1Click()">fun2</button>
+    <!-- <button onclick="obj.copyFun()">copyFun</button> -->
+  </div>
+  <script>
+    function fun1Click(){
+      const selfEvent = event;
+        console.log(selfEvent)
+        const windowEvent = window.event
+        console.log(windowEvent)
+        const argeEvent = arguments.callee.caller.arguments[0]
+        console.log(argeEvent) 
+
+        console.log(selfEvent === windowEvent)
+        console.log(selfEvent === argeEvent)
+    }
+  </script>
+</body>
+
+</html>

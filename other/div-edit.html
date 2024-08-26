@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+  <style>
+    body {
+      font-size: 14px;
+    }
+
+    .textarea-tag {
+      height: 80px;
+      width: 300px;
+      resize: none;
+      position: relative;
+    }
+
+    .textarea-tag .tag {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+
+    .textarea-tag .textarea {
+      padding: 4px;
+      height: 80px;
+      width: 300px;
+      word-break: break-all;
+      line-height: 20px;
+    }
+
+    .buttons {
+      margin-top: 16px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="app">
+    <div class="textarea-tag">
+      <el-tag v-if="showTag" class="tag" size="mini" closable @close="handleClose()">{{tagText}}</el-tag>
+      <textarea class="textarea" :style="{textIndent: textIndent}" placeholder="请输入内容" v-model="comment"></textarea>
+    </div>
+    <div class="buttons">
+      <el-button @click="showTag = true">显示标签</el-button>
+    </div>
+  </div>
+</body>
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: function () {
+      return {
+        tagText: '缺省',
+        comment: '这是一段缺省的内容',
+        showTag:true
+      }
+    },
+    computed: {
+      textIndent: function () {
+        if(!this.showTag) return 0;
+        return this.tagText.length * 14 + 10 + 15 + 'px';
+      }
+    },
+    methods:{
+      handleClose(){
+        this.showTag = false;
+      }
+    }
+  })
+</script>
+
+</html>

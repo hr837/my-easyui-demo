@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>两个表格的弹性布局</title>
+    <link rel="stylesheet" type="text/css" href="../libs/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../libs/icon.css">
+    <script type="text/javascript" src="../libs/jquery.min.js">
+    </script>
+    <script type="text/javascript" src="../libs/jquery.easyui.min.js">
+    </script>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .left {
+            width: 180px;
+            background-color: #f1f1f1;
+        }
+
+        .content {
+            display: flex;
+            flex-flow: column nowrap;
+            overflow: hidden;
+        }
+
+        .my-panel {
+            padding: 12px;
+            flex-grow: 1;
+            flex-basis: 50%;
+            overflow: hidden;
+        }
+
+        .panel1 .table-box {
+            height: calc(100% - 40px);
+        }
+
+        .panel2 .table-box {
+            height: calc(100% - 68px);
+        }
+
+        .collapse {
+            flex-grow: 0;
+            flex-basis: auto;
+            height: 52px;
+        }
+
+        .my-header {
+            height: 32px;
+            padding: 0 12px;
+            background-color: #f1f1f1;
+            line-height: 32px;
+            margin-bottom: 8px;
+        }
+
+        .actions {
+            height: 28px;
+            line-height: 28px;
+            margin-bottom: 8px;
+        }
+
+        .actions button {
+            height: 28px;
+            min-width: 60px;
+        }
+
+        button+button {
+            margin-left: 8px;
+        }
+    </style>
+</head>
+
+<body class="easyui-layout" fit="true">
+
+    <script type="text/javascript">
+        
+        function formatter() {
+            return '<div title=""><a href="javascript:void(0)">编辑</a></div>';
+        }
+
+        const formater = {
+            edit: function () {
+                return '<div title=""><a href="javascript:void(0)">编辑</a></div>';
+            }
+        }
+
+        function editClick() {
+            console.log(this)
+        }
+
+        const setting = {
+            onCellEdit:function(id){
+                console.log(id)
+            },
+            columnsA: [[
+                { field: 'Name', title: '名称', width: 200 },
+                { field: 'AA', title: '名称AA', width: 200 },
+                { field: 'BB', title: '名称BB', width: 200 },
+                {
+                    field: 'ID', title: '操作', width: 80,
+                    formatter: function (value) {
+                        return '<div title=""><a href="javascript:void(0)" onclick="setting.onCellEdit(\''+value+'\')">编辑</a></div>';
+                    },
+                },
+            ]]
+        }
+
+        $(function () {
+
+            $('#dataTable').datagrid({
+                fit: true,
+                fitColumns: true,
+                columns: setting.columnsA,
+                singleSelect: true,
+            }).datagrid('loadData', [
+                { Name: 'XX', AA: 'XX-AA', BB: 'XX-BB', ID: 'ID-1' },
+                { Name: 'XX', AA: 'XX-AA', BB: 'XX-BB', ID: 'ID-2' },
+                { Name: 'XX', AA: 'XX-AA', BB: 'XX-BB', ID: 'ID-3' },
+                { Name: 'XX', AA: 'XX-AA', BB: 'XX-BB', ID: 'ID-4' },
+            ])
+
+
+
+        })
+    </script>
+
+    <div region="west" class="left">
+        切换Columns
+    </div>
+    <div region="center" border="false" class="content">
+        <!-- 第一个面板 -->
+        <div class="my-panel panel1" data-type="R">
+            <div class="my-header">
+                这是面板1
+            </div>
+            <div class="table-box">
+                <table id="dataTable">
+                </table>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+<script type="text/javascript">
+
+
+</script>
+</html>
